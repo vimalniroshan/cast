@@ -67,7 +67,8 @@ receiverListener = function(e){
 
 onInitSuccess = function(){
 	console.log("callback:onInitSuccess");
-	enableMediaInput();
+	setCastAvailable();
+	enableMediaInput();	
 };
 
 onInitError = function(){
@@ -84,6 +85,8 @@ onRequestSessionError = function(e){
 	console.log("callback:onRequestSessionError:"+e);
 	if(isPlay()) {
 		stopCasting();
+	} else {
+		setCastError();
 	}
 };
 
@@ -94,11 +97,13 @@ stopCasting = function() {
 };
 
 onStopCastingError = function(){
-	console.log("callback:onStopError");
+	console.log("callback:onStopCastingError");
+	setCastError();
 };
 
 onStopCastingSuccess = function() {
 	console.log("callback:onStopCastingSuccess:Casting stopped ...");
+	setCastAvailable();
 };
 
 loadMediaInCastSession = function(session, mediaUrl) {
@@ -118,7 +123,8 @@ loadMediaInCastSession = function(session, mediaUrl) {
 onMediaDiscovered = function(how, media){
 	console.log("callback:onMediaDiscovered");
 	
-	enableMediaControl();	
+	enableMediaControl();
+	setCasting();
 	currentMedia = media;
 	updateMediaControlers(currentMedia.playerState);
 	currentMedia.addUpdateListener(onMediaStatusUpdate);
@@ -131,7 +137,7 @@ onMediaStatusUpdate = function(){
 
 onMediaError = function(e){
 	console.log("callback:onMediaError:" + e);
-	document.getElementsByTagName("body")[0].innerHTML = "callback:onMediaError:" + e;
+	setCastError();
 };
 
 launchApp = function() {
@@ -150,8 +156,7 @@ playOrPause = function(){
 
 stop = function(){
 	if(currentMedia) {		
-		currentMedia.stop(null, updateMediaControlers.bind(this, "STOPPED"));
-		stopCasting();
+		currentMedia.stop(null, updateMediaControlers.bind(this, "STOPPED"));		
 	}
 };
 
@@ -162,7 +167,7 @@ updateMediaControlers = function(mediaStatus) {
 	} else if(mediaStatus === "PAUSED") {
 		toPlayButton();
 	} else if(mediaStatus === "STOPPED") {
-		disableMediaControl();	
+		setCastAvailable();	
 	}
 };
 
@@ -212,7 +217,24 @@ getMediaUrl = function(){
 	return $("#mediaUrl").val();
 };
 
-disableAll();		
+setCastNotAvailable = function() {
+	$('#cast-icon').attr( "class", "centered cast-not-available " );
+};
+
+setCastAvailable = function() {
+	$('#cast-icon').attr( "class", "centered cast-available " );
+};
+
+setCastError = function() {
+	$('#cast-icon').attr( "class", "centered cast-error" );
+};
+
+setCasting = function() {
+	$('#cast-icon').attr( "class", "centered casting" );
+};
+
+disableAll();
+setCastNotAvailable();		
 console.log("Trying to initialize chrome cast...");
 initializeCastApi();		
 console.log("Trying to initialize done");

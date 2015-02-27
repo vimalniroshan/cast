@@ -1,0 +1,24 @@
+.cast-available {
+	background: url(../images/cast-icons.png) -64px -115px;  
+}
+
+.cast-not-available {
+	background: url(../images/cast-icons.png) -279px -115px; 
+}
+
+.casting {
+	background: url(../images/cast-icons.png) -64px -408px; 
+
+}
+
+.cast-error {
+	background: url(../images/cast-icons.png) -493px -114px; 
+}
+
+.centered{
+    width: 110px;
+	height: 85px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
